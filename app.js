@@ -25,12 +25,19 @@ app.get('/', (req, res) => {
     res.render('home');
 })
 
-// Creating a new museum
-app.get('/makemuseum', async (req, res) => {
-    const theMusuem = new Museum({title: 'MOMA', description: 'A place that fuels creativity, ignites minds, and provides inspiration'})
-    await theMusuem.save();
-    res.send(theMusuem);
+// Route to display museum list
+app.get('/museums', async (req, res) => {
+    const museums = await Museum.find({});
+    res.render('museums/index', {museums});
 })
+
+
+// Creating a new museum
+// app.get('/makemuseum', async (req, res) => {
+//     const theMusuem = new Museum({title: 'MOMA', description: 'A place that fuels creativity, ignites minds, and provides inspiration'})
+//     await theMusuem.save();
+//     res.send(theMusuem);
+// })
 
 app.listen(3000, () => {
     console.log('Serving on port 3000')
