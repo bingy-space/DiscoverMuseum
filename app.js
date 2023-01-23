@@ -25,10 +25,16 @@ app.get('/', (req, res) => {
     res.render('home');
 })
 
-// Route to display museum list
+// Index Route: to display museum list
 app.get('/museums', async (req, res) => {
     const museums = await Museum.find({});
     res.render('museums/index', {museums});
+})
+
+// Show Route: to show museum detail
+app.get('/museums/:id', async (req, res) => {
+    const theMuseum = await Museum.findById(req.params.id);
+    res.render('museums/show',{ theMuseum });
 })
 
 
