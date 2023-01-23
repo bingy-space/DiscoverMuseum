@@ -10,7 +10,7 @@
     <h1>All Museums</h1>
     <ul>
         <% for(let museum of museums){ %>
-            <li><%= museum.title %></li>
+            <li><a href="/museums/<%= museum._id %>"><%= museum.title %></a></li>
         <%}%>
     </ul>
 </body>
