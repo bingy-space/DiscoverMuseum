@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
 const Museum = require('./models/museum');
-const museum = require('./models/museum');
+const methodOverride = require('method-override');
 
 // Call mongoose.connect
 mongoose.connect('mongodb://localhost:27017/discover-museum', {
@@ -23,6 +23,9 @@ app.set('view engine','ejs');
 app.set('views', path.join(__dirname, 'views'));
 // parses incoming requests
 app.use(express.urlencoded({ extended: true }))
+// method-override
+app.use(methodOverride('_method'));
+
 
 app.get('/', (req, res) => {
     res.render('home');
@@ -50,6 +53,18 @@ app.post('/museums', async (req, res) => {
 app.get('/museums/:id', async (req, res) => {
     const theMuseum = await Museum.findById(req.params.id);
     res.render('museums/show',{ theMuseum });
+})
+
+// Edit Route: to edit museum
+app.get('/museums/:id/edit', async (req, res) => {
+    const museum = await Museum.findById(req.params.id);
+    res.render('museums/edit',{ museum });
+})
+
+app.put('/museums/:id', async (req, res) => {
+    const { id } = req.params;
+    const museum = await Museum.findByIdAndUpdate(id, { ...req.body.museum });
+    res.redirect(`/museums/${ museum._id }`);
 })
 
 
