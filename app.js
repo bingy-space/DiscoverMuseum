@@ -67,6 +67,12 @@ app.put('/museums/:id', async (req, res) => {
     res.redirect(`/museums/${ museum._id }`);
 })
 
+// Delete Route: delete a museum
+app.delete('/museums/:id', async (req, res) => {
+    const { id } = req.params;
+    await Museum.findByIdAndDelete(id);
+    res.redirect('/museums');
+})
 
 
 // Creating a new museum
