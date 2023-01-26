@@ -3,6 +3,9 @@
 <h1>Museum Detail</h1>
 <h3><%= theMuseum.title %></h3>
 <h4><%= theMuseum.location %></h4>
+<img src="<%= theMuseum.image %>" alt="">
+<p><%= theMuseum.description %></p>
+<p>$<%= theMuseum.price %></p>
 <footer>
     <a href="/museums/<%= theMuseum._id %>/edit">Edit</a>
     <a href="/museums">All Museum</a>
