@@ -1,11 +1,28 @@
 <% layout('/layouts/boilerplate.ejs')%>
 
-<h1>All Museums</h1>
-<div>
-    <a href="/museums/new">Add New Museum</a>
-</div>
-<ul>
-    <% for(let museum of museums){ %>
-        <li><a href="/museums/<%= museum._id %>"><%= museum.title %></a></li>
-    <%}%>
-</ul>
+    <!-- Jumbotron -->
+    <div class="p-5 text-center bg-light container-fluid" style="margin-top: 30px; margin-bottom: 30px;">
+        <h1 class="mb-3">Discover Museum</h1>
+        <a class="btn btn-primary" href="/museums/new" role="button">Add New Museum</a>
+    </div>
+    <!-- Jumbotron -->
+
+    <div class="d-flex align-content-start flex-wrap gap-3">
+        <% for(let museum of museums){ %>
+            <div class="card" style="width:19.5rem;">
+                <img src="https://mdbcdn.b-cdn.net/img/new/standard/nature/184.webp" class="card-img-top"
+                    alt="Fissure in Sandstone" />
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <%= museum.title %>
+                    </h5>
+                    <p class="card-text">
+                        <%= museum.location %>
+                    </p>
+                    <p class="card-text">$<%= museum.price %>
+                    </p>
+                    <a href="/museums/<%= museum._id %>" class="btn btn-primary btn-rounded">View Detail</a>
+                </div>
+            </div>
+            <%}%>
+    </div>
