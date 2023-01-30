@@ -45,10 +45,15 @@ app.get('/museums/new', async (req, res) => {
 })
 
 // POST new museum
-app.post('/museums', async (req, res) => {
-    const theMuseum = new Museum(req.body.museum);
-    await theMuseum.save();
-    res.redirect(`/museums/${theMuseum._id}`)
+app.post('/museums', async (req, res, next) => {
+    try{
+        const theMuseum = new Museum(req.body.museum);
+        await theMuseum.save();
+        res.redirect(`/museums/${theMuseum._id}`)
+    }catch(e){
+        next(e)
+    }
+
 })
 
 // Show Route: to show museum detail
@@ -75,6 +80,11 @@ app.delete('/museums/:id', async (req, res) => {
     await Museum.findByIdAndDelete(id);
     res.redirect('/museums');
 })
+
+app.use((err, req, res, next) => {
+    res.send('OMG !!');
+})
+
 
 
 // Creating a new museum
