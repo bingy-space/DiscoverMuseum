@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const Museum = require('./models/museum');
 const methodOverride = require('method-override');
 const ejsMate = require('ejs-mate');
+const catchAsync = require('./utils/catchAsync');
 
 // Call mongoose.connect
 mongoose.connect('mongodb://localhost:27017/discover-museum', {
@@ -14,14 +15,14 @@ mongoose.connect('mongodb://localhost:27017/discover-museum', {
 
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "Connection Error:"));
-db.once("open", () =>{
+db.once("open", () => {
     console.log("Database connected");
 })
 
 const app = express();
 
-app.engine('ejs',ejsMate);
-app.set('view engine','ejs');
+app.engine('ejs', ejsMate);
+app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 // parses incoming requests
 app.use(express.urlencoded({ extended: true }))
@@ -34,52 +35,47 @@ app.get('/', (req, res) => {
 })
 
 // Index Route: to display museum list
-app.get('/museums', async (req, res) => {
+app.get('/museums',catchAsync( async (req, res) => {
     const museums = await Museum.find({});
-    res.render('museums/index', {museums});
-})
+    res.render('museums/index', { museums });
+}))
 
 // New Route: add a museum page
-app.get('/museums/new', async (req, res) => {
+app.get('/museums/new',catchAsync( async (req, res) => {
     res.render('museums/new');
-})
+}))
 
 // POST new museum
-app.post('/museums', async (req, res, next) => {
-    try{
-        const theMuseum = new Museum(req.body.museum);
-        await theMuseum.save();
-        res.redirect(`/museums/${theMuseum._id}`)
-    }catch(e){
-        next(e)
-    }
-
-})
+app.post('/museums', catchAsync(async (req, res, next) => {
+    const theMuseum = new Museum(req.body.museum);
+    await theMuseum.save();
+    res.redirect(`/museums/${theMuseum._id}`)
+}))
 
 // Show Route: to show museum detail
-app.get('/museums/:id', async (req, res) => {
+app.get('/museums/:id',catchAsync( async (req, res) => {
     const theMuseum = await Museum.findById(req.params.id);
-    res.render('museums/show',{ theMuseum });
-})
+    res.render('museums/show', { theMuseum });
+}))
 
 // Edit Route: to edit museum
-app.get('/museums/:id/edit', async (req, res) => {
+app.get('/museums/:id/edit',catchAsync( async (req, res) => {
     const museum = await Museum.findById(req.params.id);
-    res.render('museums/edit',{ museum });
-})
+    res.render('museums/edit', { museum });
+}))
 
-app.put('/museums/:id', async (req, res) => {
+app.put('/museums/:id',catchAsync( async (req, res) => {
     const { id } = req.params;
     const museum = await Museum.findByIdAndUpdate(id, { ...req.body.museum });
-    res.redirect(`/museums/${ museum._id }`);
-})
+    res.redirect(`/museums/${museum._id}`);
+}))
 
 // Delete Route: delete a museum
-app.delete('/museums/:id', async (req, res) => {
+app.delete('/museums/:id',catchAsync( async (req, res) => {
     const { id } = req.params;
     await Museum.findByIdAndDelete(id);
     res.redirect('/museums');
-})
+}))
 
 app.use((err, req, res, next) => {
     res.send('OMG !!');
