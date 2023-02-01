@@ -6,6 +6,7 @@ const methodOverride = require('method-override');
 const ejsMate = require('ejs-mate');
 const catchAsync = require('./utils/catchAsync');
 const ExpressError = require('./utils/ExpressError');
+const Joi = require('joi');
 
 // Call mongoose.connect
 mongoose.connect('mongodb://localhost:27017/discover-museum', {
@@ -48,7 +49,22 @@ app.get('/museums/new',catchAsync( async (req, res) => {
 
 // POST new museum
 app.post('/museums', catchAsync(async (req, res, next) => {
-    if(!req.body.theMuseum) throw new ExpressError('Invalid Museum Data',400);
+    // if(!req.body.theMuseum) throw new ExpressError('Invalid Museum Data',400);
+    const museumSchema = Joi.object({
+        theMuseum: Joi.object({
+            title: Joi.string().required(),
+            price: Joi.number().required().min(0),
+            image: Joi.string().required(),
+            location: Joi.string().required(),
+            description: Joi.string().required()
+        }).required()
+    })
+    const { error } = museumSchema.validate(req.body);
+    if(error){
+        const msg = error.details.map(el => el.message).join(',')
+        throw new ExpressError(msg, 400)
+    }
+
     const theMuseum = new Museum(req.body.museum);
     await theMuseum.save();
     res.redirect(`/museums/${theMuseum._id}`)
