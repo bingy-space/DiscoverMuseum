@@ -5,6 +5,7 @@ const Museum = require('./models/museum');
 const methodOverride = require('method-override');
 const ejsMate = require('ejs-mate');
 const catchAsync = require('./utils/catchAsync');
+const ExpressError = require('./utils/ExpressError');
 
 // Call mongoose.connect
 mongoose.connect('mongodb://localhost:27017/discover-museum', {
@@ -47,6 +48,7 @@ app.get('/museums/new',catchAsync( async (req, res) => {
 
 // POST new museum
 app.post('/museums', catchAsync(async (req, res, next) => {
+    if(!req.body.theMuseum) throw new ExpressError('Invalid Museum Data',400);
     const theMuseum = new Museum(req.body.museum);
     await theMuseum.save();
     res.redirect(`/museums/${theMuseum._id}`)
@@ -77,11 +79,14 @@ app.delete('/museums/:id',catchAsync( async (req, res) => {
     res.redirect('/museums');
 }))
 
-app.use((err, req, res, next) => {
-    res.send('OMG !!');
+app.all('*', (req,res,next) => {
+    next(new ExpressError('Page Not Found', 404));
 })
 
-
+app.use((err, req, res, next) => {
+    const { statusCode = 500, message = 'Something went wrong'} = err;
+    res.status(statusCode).send(message);
+})
 
 // Creating a new museum
 // app.get('/makemuseum', async (req, res) => {
