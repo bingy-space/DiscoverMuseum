@@ -6,7 +6,7 @@ const methodOverride = require('method-override');
 const ejsMate = require('ejs-mate');
 const catchAsync = require('./utils/catchAsync');
 const ExpressError = require('./utils/ExpressError');
-const Joi = require('joi');
+const { museumSchema } = require('./schemas.js');
 
 // Call mongoose.connect
 mongoose.connect('mongodb://localhost:27017/discover-museum', {
@@ -31,6 +31,17 @@ app.use(express.urlencoded({ extended: true }))
 // method-override
 app.use(methodOverride('_method'));
 
+// Middleware
+const validateMuseum = (req,res,next) => {
+    const { error } = museumSchema.validate(req.body);
+    if(error){
+        const msg = error.details.map(el => el.message).join(',')
+        throw new ExpressError(msg, 400)
+    }else{
+        next();
+    }
+}
+
 
 app.get('/', (req, res) => {
     res.render('home');
@@ -48,23 +59,8 @@ app.get('/museums/new',catchAsync( async (req, res) => {
 }))
 
 // POST new museum
-app.post('/museums', catchAsync(async (req, res, next) => {
+app.post('/museums',validateMuseum, catchAsync(async (req, res, next) => {
     // if(!req.body.theMuseum) throw new ExpressError('Invalid Museum Data',400);
-    const museumSchema = Joi.object({
-        theMuseum: Joi.object({
-            title: Joi.string().required(),
-            price: Joi.number().required().min(0),
-            image: Joi.string().required(),
-            location: Joi.string().required(),
-            description: Joi.string().required()
-        }).required()
-    })
-    const { error } = museumSchema.validate(req.body);
-    if(error){
-        const msg = error.details.map(el => el.message).join(',')
-        throw new ExpressError(msg, 400)
-    }
-
     const theMuseum = new Museum(req.body.museum);
     await theMuseum.save();
     res.redirect(`/museums/${theMuseum._id}`)
@@ -82,7 +78,7 @@ app.get('/museums/:id/edit',catchAsync( async (req, res) => {
     res.render('museums/edit', { museum });
 }))
 
-app.put('/museums/:id',catchAsync( async (req, res) => {
+app.put('/museums/:id',validateMuseum, catchAsync( async (req, res) => {
     const { id } = req.params;
     const museum = await Museum.findByIdAndUpdate(id, { ...req.body.museum });
     res.redirect(`/museums/${museum._id}`);
