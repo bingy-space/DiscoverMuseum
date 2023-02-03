@@ -23,7 +23,7 @@
               </div>
         </div>
         <div class="col-md-8">
-            <div class="card" style="width: 100%;">
+            <div class="card" style="width: 100%; margin-bottom: 20px;">
                 <img src="<%= theMuseum.image %>" class="card-img-top"
                     alt="Chicago Skyscrapers" />
                 <div class="card-body">
@@ -44,6 +44,28 @@
                             </form>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <!-- Review Section -->
+            <div class="card">
+                <div class="card-header">Leave a Review</div>
+                <div class="card-body">
+                    <form action="">
+                        <!-- Slider input -->
+                        <label for="customRange3" class="form-label">Rating</label>
+                        <div class="range mb-4">
+                          <input type="range" class="form-range" min="0" max="5" step="1" id="rating" name="review[rating]" />
+                        </div>
+                    
+                        <!-- Textarea input -->
+                        <div class="form-outline mb-4">
+                            <textarea class="form-control" name="review[body]" id="'body" rows="4"></textarea>
+                            <label class="form-label" for="rating">Message</label>
+                        </div>                    
+                        <!-- Submit button -->
+                        <button type="submit" class="btn btn-primary btn-block">Sign in</button>
+                    </form>
                 </div>
             </div>
         </div>
