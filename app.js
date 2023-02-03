@@ -6,7 +6,7 @@ const methodOverride = require('method-override');
 const ejsMate = require('ejs-mate');
 const catchAsync = require('./utils/catchAsync');
 const ExpressError = require('./utils/ExpressError');
-const { museumSchema } = require('./schemas.js');
+const { museumSchema, reviewSchema } = require('./schemas.js');
 const Review = require('./models/review');
 
 // Call mongoose.connect
@@ -35,6 +35,15 @@ app.use(methodOverride('_method'));
 // Middleware
 const validateMuseum = (req,res,next) => {
     const { error } = museumSchema.validate(req.body);
+    if(error){
+        const msg = error.details.map(el => el.message).join(',')
+        throw new ExpressError(msg, 400)
+    }else{
+        next();
+    }
+}
+const validateReview = (req,res,next) => {
+    const { error } = reviewSchema.validate(req.body);
     if(error){
         const msg = error.details.map(el => el.message).join(',')
         throw new ExpressError(msg, 400)
@@ -93,7 +102,7 @@ app.delete('/museums/:id',catchAsync( async (req, res) => {
 }))
 
 // Review POST route: add review
-app.post('/museums/:id/reviews', catchAsync(async (req, res) => {
+app.post('/museums/:id/reviews',validateReview, catchAsync(async (req, res) => {
     const museum = await Museum.findById(req.params.id);
     const review = new Review(req.body.review);
     museum.reviews.push(review);

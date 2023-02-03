@@ -51,17 +51,18 @@
             <div class="card">
                 <div class="card-header">Leave a Review</div>
                 <div class="card-body">
-                    <form action="/museums/<%= theMuseum._id %>/reviews" method="POST">
+                    <form action="/museums/<%= theMuseum._id %>/reviews" method="POST" novalidate class="validated-form">
                         <!-- Slider input -->
                         <label for="customRange3" class="form-label">Rating</label>
                         <div class="range mb-4">
-                          <input type="range" class="form-range" min="0" max="5" step="1" id="rating" name="review[rating]" />
+                          <input type="range" class="form-range" min="0" max="5" step="1" id="rating" name="review[rating]" required />
                         </div>
                     
                         <!-- Textarea input -->
                         <div class="form-outline mb-4">
-                            <textarea class="form-control" name="review[body]" id="'body" rows="4"></textarea>
+                            <textarea class="form-control" name="review[body]" id="'body" rows="4" required ></textarea>
                             <label class="form-label" for="rating">Message</label>
+                            <div class="valid-feedback">Looks good!</div>
                         </div>                    
                         <!-- Submit button -->
                         <button type="submit" class="btn btn-primary btn-block">Sign in</button>
