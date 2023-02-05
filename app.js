@@ -112,6 +112,14 @@ app.post('/museums/:id/reviews',validateReview, catchAsync(async (req, res) => {
     res.redirect(`/museums/${museum._id}`);
 }))
 
+// Review DELETE route: delete a review
+app.delete('/museums/:id/reviews/:reviewId', catchAsync(async (req, res) => {
+    const  {id, reviewId } = req.params;
+    await Museum.findByIdAndUpdate(id, { $pull: { reviews: reviewId }})
+    await Review.findByIdAndDelete(reviewId);
+    res.redirect(`/museums/${id}`);
+}))
+
 app.all('*', (req,res,next) => {
     next(new ExpressError('Page Not Found', 404));
 })
