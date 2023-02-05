@@ -11,34 +11,40 @@
             <div class="card" style="margin-bottom: 5%;">
                 <div class="card-header">Location</div>
                 <div class="card-body">
-                  <h5 class="card-title"><%= theMuseum.location %></h5>
+                    <h5 class="card-title">
+                        <%= theMuseum.location %>
+                    </h5>
                 </div>
-              </div>
+            </div>
 
-              <div class="card" style="margin-bottom: 5%;">
+            <div class="card" style="margin-bottom: 5%;">
                 <div class="card-header">Price</div>
                 <div class="card-body">
-                  <h5 class="card-title">$<%= theMuseum.price %></h5>
+                    <h5 class="card-title">$<%= theMuseum.price %>
+                    </h5>
                 </div>
-              </div>
+            </div>
         </div>
         <div class="col-md-8">
             <div class="card" style="width: 100%; margin-bottom: 20px;">
-                <img src="<%= theMuseum.image %>" class="card-img-top"
-                    alt="Chicago Skyscrapers" />
+                <img src="<%= theMuseum.image %>" class="card-img-top" alt="Chicago Skyscrapers" />
                 <div class="card-body">
-                    <h5 class="card-title"><%= theMuseum.title %></h5>
-                    <p class="card-text"><%= theMuseum.description %></p>
+                    <h5 class="card-title">
+                        <%= theMuseum.title %>
+                    </h5>
+                    <p class="card-text">
+                        <%= theMuseum.description %>
+                    </p>
                 </div>
                 <div class="card-body">
                     <div class="d-flex flex-row mb-3">
-                        <div class="p-2">                            
+                        <div class="p-2">
                             <a class="btn btn-primary" href="/museums/<%= theMuseum._id %>/edit">Edit</a>
                         </div>
                         <div class="p-2">
                             <a class="btn btn-info" href="/museums">All Museum</a>
                         </div>
-                        <div class="p-2">                            
+                        <div class="p-2">
                             <form action="/museums/<%= theMuseum._id%>?_method=DELETE" method="POST">
                                 <button class="btn btn-danger">Delete</button>
                             </form>
@@ -48,22 +54,24 @@
             </div>
 
             <!-- Review Section -->
-            <div class="card">
+            <div class="card" style="margin-bottom: 20px;">
                 <div class="card-header">Leave a Review</div>
                 <div class="card-body">
-                    <form action="/museums/<%= theMuseum._id %>/reviews" method="POST" novalidate class="validated-form">
+                    <form action="/museums/<%= theMuseum._id %>/reviews" method="POST" novalidate
+                        class="validated-form">
                         <!-- Slider input -->
                         <label for="customRange3" class="form-label">Rating</label>
                         <div class="range mb-4">
-                          <input type="range" class="form-range" min="0" max="5" step="1" id="rating" name="review[rating]" required />
+                            <input type="range" class="form-range" min="0" max="5" step="1" id="rating"
+                                name="review[rating]" required />
                         </div>
-                    
+
                         <!-- Textarea input -->
                         <div class="form-outline mb-4">
-                            <textarea class="form-control" name="review[body]" id="'body" rows="4" required ></textarea>
+                            <textarea class="form-control" name="review[body]" id="'body" rows="4" required></textarea>
                             <label class="form-label" for="rating">Message</label>
                             <div class="valid-feedback">Looks good!</div>
-                        </div>                    
+                        </div>
                         <!-- Submit button -->
                         <button type="submit" class="btn btn-primary btn-block">Sign in</button>
                     </form>
@@ -72,11 +80,12 @@
 
             <!-- Display Reviews -->
             <% for(let review of theMuseum.reviews) {%>
-                <div>
-                    <p>Rating: <%= review.rating %></p>
-                    <p>Rating: <%= review.body %></p>
+                <div class="card" style="margin-bottom: 15px;">
+                    <div class="card-body">
+                        <h5>Rating: <%= review.rating %></h5>
+                        <p><%= review.body %></p>
+                    </div>
                 </div>
             <% } %>
-            
         </div>
     </div>
