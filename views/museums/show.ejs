@@ -69,5 +69,14 @@
                     </form>
                 </div>
             </div>
+
+            <!-- Display Reviews -->
+            <% for(let review of theMuseum.reviews) {%>
+                <div>
+                    <p>Rating: <%= review.rating %></p>
+                    <p>Rating: <%= review.body %></p>
+                </div>
+            <% } %>
+            
         </div>
     </div>

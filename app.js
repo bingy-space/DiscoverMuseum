@@ -78,7 +78,8 @@ app.post('/museums',validateMuseum, catchAsync(async (req, res, next) => {
 
 // Show Route: to show museum detail
 app.get('/museums/:id',catchAsync( async (req, res) => {
-    const theMuseum = await Museum.findById(req.params.id);
+    const theMuseum = await Museum.findById(req.params.id).populate('reviews');
+    console.log(theMuseum);
     res.render('museums/show', { theMuseum });
 }))
 
