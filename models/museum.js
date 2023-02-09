@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const Review = require('./review');
 
 const MuseumSchema = new Schema({
     title: String,
