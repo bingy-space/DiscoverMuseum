@@ -1,15 +1,12 @@
 const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
-const Museum = require('./models/museum');
 const methodOverride = require('method-override');
 const ejsMate = require('ejs-mate');
-const catchAsync = require('./utils/catchAsync');
 const ExpressError = require('./utils/ExpressError');
-const { museumSchema, reviewSchema } = require('./schemas.js');
-const Review = require('./models/review');
 
 const museums = require('./routes/museums');
+const reviews = require('./routes/reviews');
 
 // Call mongoose.connect
 mongoose.connect('mongodb://localhost:27017/discover-museum', {
@@ -34,40 +31,15 @@ app.use(express.urlencoded({ extended: true }))
 // method-override
 app.use(methodOverride('_method'));
 
-const validateReview = (req,res,next) => {
-    const { error } = reviewSchema.validate(req.body);
-    if(error){
-        const msg = error.details.map(el => el.message).join(',')
-        throw new ExpressError(msg, 400)
-    }else{
-        next();
-    }
-}
 
 // For museum routes
 app.use('/museums', museums)
+// For review routes
+app.use('/museums/:id/reviews', reviews)
 
 app.get('/', (req, res) => {
     res.render('home');
 })
-
-// Review POST route: add review
-app.post('/museums/:id/reviews',validateReview, catchAsync(async (req, res) => {
-    const museum = await Museum.findById(req.params.id);
-    const review = new Review(req.body.review);
-    museum.reviews.push(review);
-    await review.save();
-    await museum.save();
-    res.redirect(`/museums/${museum._id}`);
-}))
-
-// Review DELETE route: delete a review
-app.delete('/museums/:id/reviews/:reviewId', catchAsync(async (req, res) => {
-    const  {id, reviewId } = req.params;
-    await Museum.findByIdAndUpdate(id, { $pull: { reviews: reviewId }})
-    await Review.findByIdAndDelete(reviewId);
-    res.redirect(`/museums/${id}`);
-}))
 
 app.all('*', (req,res,next) => {
     next(new ExpressError('Page Not Found', 404));
