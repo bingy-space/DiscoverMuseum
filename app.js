@@ -30,6 +30,8 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.urlencoded({ extended: true }))
 // method-override
 app.use(methodOverride('_method'));
+// serve public directory
+app.use(express.static(path.join(__dirname, 'public')))
 
 
 // For museum routes
