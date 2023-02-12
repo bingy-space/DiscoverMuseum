@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const methodOverride = require('method-override');
 const ejsMate = require('ejs-mate');
 const ExpressError = require('./utils/ExpressError');
+const session = require('express-session');
 
 const museums = require('./routes/museums');
 const reviews = require('./routes/reviews');
@@ -32,6 +33,17 @@ app.use(express.urlencoded({ extended: true }))
 app.use(methodOverride('_method'));
 // serve public directory
 app.use(express.static(path.join(__dirname, 'public')))
+const sessionConfig = {
+    secret: 'thisshouldbeabettersecret',
+    resave: false,
+    saveUnitialized: true,
+    cookie: {
+        httpOnly: true,
+        expire: Date.now() + 1000 * 60 * 60 * 24 * 7,
+        maxAge: 1000 * 60 * 60 * 24 * 7
+    }
+}
+app.use(session(sessionConfig));
 
 
 // For museum routes
