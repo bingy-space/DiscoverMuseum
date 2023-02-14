@@ -32,6 +32,7 @@ router.post('/',validateMuseum, catchAsync(async (req, res, next) => {
     // if(!req.body.theMuseum) throw new ExpressError('Invalid Museum Data',400);
     const theMuseum = new Museum(req.body.museum);
     await theMuseum.save();
+    req.flash('success','Successfully made a new museum');
     res.redirect(`/museums/${theMuseum._id}`)
 }))
 
