@@ -53,6 +53,7 @@ router.get('/:id/edit',catchAsync( async (req, res) => {
 router.put('/:id',validateMuseum, catchAsync( async (req, res) => {
     const { id } = req.params;
     const museum = await Museum.findByIdAndUpdate(id, { ...req.body.museum });
+    req.flash('success','Successfully Updates Museum');
     res.redirect(`/museums/${museum._id}`);
 }))
 
