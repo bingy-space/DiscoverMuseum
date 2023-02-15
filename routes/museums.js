@@ -39,13 +39,20 @@ router.post('/',validateMuseum, catchAsync(async (req, res, next) => {
 // Show Route: to show museum detail
 router.get('/:id',catchAsync( async (req, res) => {
     const theMuseum = await Museum.findById(req.params.id).populate('reviews');
-    console.log(theMuseum);
+    if(!theMuseum){
+        req.flash('error','Cannot find that museum');
+        return res.redirect('/museums');
+    }
     res.render('museums/show', { theMuseum });
 }))
 
 // Edit Route: to edit museum
 router.get('/:id/edit',catchAsync( async (req, res) => {
     const museum = await Museum.findById(req.params.id);
+    if(!museum){
+        req.flash('error','Cannot find that museum');
+        return res.redirect('/museums');
+    }
     res.render('museums/edit', { museum });
 }))
 
