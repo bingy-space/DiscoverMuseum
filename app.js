@@ -7,6 +7,10 @@ const ExpressError = require('./utils/ExpressError');
 const session = require('express-session');
 const flash = require('connect-flash');
 
+const passport = require('passport');
+const LocalStrategy = require('passport-local');
+const User = require('./models/user');
+
 const museums = require('./routes/museums');
 const reviews = require('./routes/reviews');
 
@@ -46,6 +50,12 @@ const sessionConfig = {
 }
 app.use(session(sessionConfig));
 app.use(flash());
+// Passport
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 app.use((req, res, next) => {
     res.locals.success = req.flash('success');
@@ -53,6 +63,14 @@ app.use((req, res, next) => {
 
     next();
 })
+// Testing Only
+// Will delete
+app.get('/fakeUser', async(req,res) =>{
+    const user = new User({email: 'sammy@email.com', username: 'sammy'})
+    const newUser = await User.register(user,'sampassword')
+    res.send(newUser);
+})
+
 
 // For museum routes
 app.use('/museums', museums)
