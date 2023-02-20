@@ -11,8 +11,9 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const User = require('./models/user');
 
-const museums = require('./routes/museums');
-const reviews = require('./routes/reviews');
+const userRoutes = require('./routes/users');
+const museumRoutes = require('./routes/museums');
+const reviewRoutes = require('./routes/reviews');
 
 // Call mongoose.connect
 mongoose.connect('mongodb://localhost:27017/discover-museum', {
@@ -71,11 +72,12 @@ app.get('/fakeUser', async(req,res) =>{
     res.send(newUser);
 })
 
-
+// For user routes
+app.use('/', userRoutes)
 // For museum routes
-app.use('/museums', museums)
+app.use('/museums', museumRoutes)
 // For review routes
-app.use('/museums/:id/reviews', reviews)
+app.use('/museums/:id/reviews', reviewRoutes)
 
 app.get('/', (req, res) => {
     res.render('home');
