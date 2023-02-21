@@ -4,6 +4,7 @@ const catchAsync = require('../utils/catchAsync');
 const ExpressError = require('../utils/ExpressError');
 const Museum = require('../models/museum');
 const { museumSchema } = require('../schemas.js');
+const { isLoggedIn } = require('../middleware');
 
 // Middleware
 const validateMuseum = (req,res,next) => {
@@ -23,12 +24,12 @@ router.get('/',catchAsync( async (req, res) => {
 }))
 
 // New Route: add a museum page
-router.get('/new',catchAsync( async (req, res) => {
+router.get('/new', isLoggedIn, catchAsync( async (req, res) => {
     res.render('museums/new');
 }))
 
 // POST new museum
-router.post('/',validateMuseum, catchAsync(async (req, res, next) => {
+router.post('/',isLoggedIn, validateMuseum, catchAsync(async (req, res, next) => {
     // if(!req.body.theMuseum) throw new ExpressError('Invalid Museum Data',400);
     const theMuseum = new Museum(req.body.museum);
     await theMuseum.save();
@@ -47,7 +48,7 @@ router.get('/:id',catchAsync( async (req, res) => {
 }))
 
 // Edit Route: to edit museum
-router.get('/:id/edit',catchAsync( async (req, res) => {
+router.get('/:id/edit', isLoggedIn,catchAsync( async (req, res) => {
     const museum = await Museum.findById(req.params.id);
     if(!museum){
         req.flash('error','Cannot find that museum');
@@ -57,7 +58,7 @@ router.get('/:id/edit',catchAsync( async (req, res) => {
 }))
 
 // Update Route: update the museum
-router.put('/:id',validateMuseum, catchAsync( async (req, res) => {
+router.put('/:id', isLoggedIn, validateMuseum, catchAsync( async (req, res) => {
     const { id } = req.params;
     const museum = await Museum.findByIdAndUpdate(id, { ...req.body.museum });
     req.flash('success','Successfully Updates Museum');
@@ -65,7 +66,7 @@ router.put('/:id',validateMuseum, catchAsync( async (req, res) => {
 }))
 
 // Delete Route: delete a museum
-router.delete('/:id',catchAsync( async (req, res) => {
+router.delete('/:id', isLoggedIn, catchAsync( async (req, res) => {
     const { id } = req.params;
     await Museum.findByIdAndDelete(id);
     res.redirect('/museums');
