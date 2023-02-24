@@ -37,7 +37,7 @@
                     </p>
                 </div>
                 <div class="card-body">
-                    <div class="d-flex flex-row mb-3">
+                    <div class="d-flex flex-row">
                         <div class="p-2">
                             <a class="btn btn-primary" href="/museums/<%= theMuseum._id %>/edit">Edit</a>
                         </div>
@@ -50,6 +50,12 @@
                             </form>
                         </div>
                     </div>
+                </div>
+                <div class="card-body">
+                    <hr>
+                    <p class="card-text">
+                        Submitted by <%= theMuseum.author.username %>
+                    </p>
                 </div>
             </div>
 

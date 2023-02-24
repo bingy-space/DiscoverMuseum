@@ -32,6 +32,7 @@ router.get('/new', isLoggedIn, catchAsync( async (req, res) => {
 router.post('/',isLoggedIn, validateMuseum, catchAsync(async (req, res, next) => {
     // if(!req.body.theMuseum) throw new ExpressError('Invalid Museum Data',400);
     const theMuseum = new Museum(req.body.museum);
+    theMuseum.author = req.user._id;
     await theMuseum.save();
     req.flash('success','Successfully made a new museum');
     res.redirect(`/museums/${theMuseum._id}`)
@@ -39,7 +40,8 @@ router.post('/',isLoggedIn, validateMuseum, catchAsync(async (req, res, next) =>
 
 // Show Route: to show museum detail
 router.get('/:id',catchAsync( async (req, res) => {
-    const theMuseum = await Museum.findById(req.params.id).populate('reviews');
+    const theMuseum = await Museum.findById(req.params.id).populate('reviews').populate('author');
+    console.log(theMuseum);
     if(!theMuseum){
         req.flash('error','Cannot find that museum');
         return res.redirect('/museums');
