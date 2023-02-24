@@ -36,21 +36,20 @@
                         <%= theMuseum.description %>
                     </p>
                 </div>
-                <div class="card-body">
-                    <div class="d-flex flex-row">
-                        <div class="p-2">
-                            <a class="btn btn-primary" href="/museums/<%= theMuseum._id %>/edit">Edit</a>
-                        </div>
-                        <div class="p-2">
-                            <a class="btn btn-info" href="/museums">All Museum</a>
-                        </div>
-                        <div class="p-2">
-                            <form action="/museums/<%= theMuseum._id%>?_method=DELETE" method="POST">
-                                <button class="btn btn-danger">Delete</button>
-                            </form>
+                <% if(currentuser && theMuseum.author.equals(currentuser._id)){ %>
+                    <div class="card-body">
+                        <div class="d-flex flex-row">
+                            <div class="p-2">
+                                <a class="btn btn-primary" href="/museums/<%= theMuseum._id %>/edit">Edit</a>
+                            </div>
+                            <div class="p-2">
+                                <form action="/museums/<%= theMuseum._id%>?_method=DELETE" method="POST">
+                                    <button class="btn btn-danger">Delete</button>
+                                </form>
+                            </div>
                         </div>
                     </div>
-                </div>
+                <% } %>
                 <div class="card-body">
                     <hr>
                     <p class="card-text">
