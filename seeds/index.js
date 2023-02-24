@@ -30,6 +30,7 @@ const seedDB = async () => {
         const price = Math.floor(Math.random() * 20 + 10);
 
         const theMuseum = new Museum({
+            author: '63f3b9dc546b94293bc65b67',
             location: `${cities[random1000].city}, ${cities[random1000].state}`,
             title: `${sample(name)}`,
             image: 'https://images.unsplash.com/photo-1513038630932-13873b1a7f29?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=735&q=80',
