@@ -4,23 +4,13 @@ const catchAsync = require('../utils/catchAsync');
 const ExpressError = require('../utils/ExpressError');
 const Museum = require('../models/museum');
 const Review = require('../models/review');
-const { reviewSchema } = require('../schemas.js');
+const { validateReview } = require('../middleware');
 
-// Middleware
-const validateReview = (req,res,next) => {
-    const { error } = reviewSchema.validate(req.body);
-    if(error){
-        const msg = error.details.map(el => el.message).join(',')
-        throw new ExpressError(msg, 400)
-    }else{
-        next();
-    }
-}
 
 // Review POST route: add review
 router.post('/',validateReview, catchAsync(async (req, res) => {
     const museum = await Museum.findById(req.params.id);
-    const review = new Review(req.body.review);
+    const review = new Review(req.body.review);d
     museum.reviews.push(review);
     await review.save();
     await museum.save();

@@ -4,18 +4,7 @@ const catchAsync = require('../utils/catchAsync');
 const ExpressError = require('../utils/ExpressError');
 const Museum = require('../models/museum');
 const { museumSchema } = require('../schemas.js');
-const { isLoggedIn } = require('../middleware');
-
-// Middleware
-const validateMuseum = (req,res,next) => {
-    const { error } = museumSchema.validate(req.body);
-    if(error){
-        const msg = error.details.map(el => el.message).join(',')
-        throw new ExpressError(msg, 400)
-    }else{
-        next();
-    }
-}
+const { isLoggedIn, isAuthor, validateMuseum } = require('../middleware');
 
 // Index Route: to display museum list
 router.get('/',catchAsync( async (req, res) => {
@@ -50,35 +39,26 @@ router.get('/:id',catchAsync( async (req, res) => {
 }))
 
 // Edit Route: to edit museum
-router.get('/:id/edit', isLoggedIn,catchAsync( async (req, res) => {
+router.get('/:id/edit', isLoggedIn, isAuthor, catchAsync( async (req, res) => {
     const { id } = req.params;
     const museum = await Museum.findById(id);
     if(!museum){
         req.flash('error','Cannot find that museum');
         return res.redirect('/museums');
     }
-    if(!museum.author.equals(req.user._id)){
-        req.flash('error','You do not have permission to do that');
-        return res.redirect(`/museums/${id}`);
-    }
     res.render('museums/edit', { museum });
 }))
 
 // Update Route: update the museum
-router.put('/:id', isLoggedIn, validateMuseum, catchAsync( async (req, res) => {
+router.put('/:id', isLoggedIn,isAuthor, validateMuseum, catchAsync( async (req, res) => {
     const { id } = req.params;
-    const museum = await Museum.findById(id);
-    if(!museum.author.equals(req.user._id)){
-        req.flash('error','You do not have permission to do that');
-        return res.redirect(`/museums/${id}`);
-    }
-    const themuseum = await Museum.findByIdAndUpdate(id, { ...req.body.museum });
+    const museum = await Museum.findByIdAndUpdate(id, { ...req.body.museum });
     req.flash('success','Successfully Updates Museum');
     res.redirect(`/museums/${museum._id}`);
 }))
 
 // Delete Route: delete a museum
-router.delete('/:id', isLoggedIn, catchAsync( async (req, res) => {
+router.delete('/:id', isLoggedIn, isAuthor, catchAsync( async (req, res) => {
     const { id } = req.params;
     await Museum.findByIdAndDelete(id);
     res.redirect('/museums');
