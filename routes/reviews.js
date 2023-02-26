@@ -4,13 +4,14 @@ const catchAsync = require('../utils/catchAsync');
 const ExpressError = require('../utils/ExpressError');
 const Museum = require('../models/museum');
 const Review = require('../models/review');
-const { validateReview } = require('../middleware');
+const { validateReview, isLoggedIn } = require('../middleware');
 
 
 // Review POST route: add review
-router.post('/',validateReview, catchAsync(async (req, res) => {
+router.post('/',isLoggedIn, validateReview, catchAsync(async (req, res) => {
     const museum = await Museum.findById(req.params.id);
-    const review = new Review(req.body.review);d
+    const review = new Review(req.body.review);
+    review.author = req.user._id;
     museum.reviews.push(review);
     await review.save();
     await museum.save();
