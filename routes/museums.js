@@ -51,10 +51,15 @@ router.get('/:id',catchAsync( async (req, res) => {
 
 // Edit Route: to edit museum
 router.get('/:id/edit', isLoggedIn,catchAsync( async (req, res) => {
-    const museum = await Museum.findById(req.params.id);
+    const { id } = req.params;
+    const museum = await Museum.findById(id);
     if(!museum){
         req.flash('error','Cannot find that museum');
         return res.redirect('/museums');
+    }
+    if(!museum.author.equals(req.user._id)){
+        req.flash('error','You do not have permission to do that');
+        return res.redirect(`/museums/${id}`);
     }
     res.render('museums/edit', { museum });
 }))
@@ -62,7 +67,12 @@ router.get('/:id/edit', isLoggedIn,catchAsync( async (req, res) => {
 // Update Route: update the museum
 router.put('/:id', isLoggedIn, validateMuseum, catchAsync( async (req, res) => {
     const { id } = req.params;
-    const museum = await Museum.findByIdAndUpdate(id, { ...req.body.museum });
+    const museum = await Museum.findById(id);
+    if(!museum.author.equals(req.user._id)){
+        req.flash('error','You do not have permission to do that');
+        return res.redirect(`/museums/${id}`);
+    }
+    const themuseum = await Museum.findByIdAndUpdate(id, { ...req.body.museum });
     req.flash('success','Successfully Updates Museum');
     res.redirect(`/museums/${museum._id}`);
 }))
