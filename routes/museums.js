@@ -29,7 +29,7 @@ router.post('/',isLoggedIn, validateMuseum, catchAsync(async (req, res, next) =>
 
 // Show Route: to show museum detail
 router.get('/:id',catchAsync( async (req, res) => {
-    const theMuseum = await Museum.findById(req.params.id).populate('reviews').populate('author');
+    const theMuseum = await Museum.findById(req.params.id).populate({path:'reviews', populate: {path: 'author'}}).populate('author');
     console.log(theMuseum);
     if(!theMuseum){
         req.flash('error','Cannot find that museum');
