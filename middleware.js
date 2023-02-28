@@ -1,6 +1,7 @@
 const ExpressError = require('./utils/ExpressError');
 const { museumSchema, reviewSchema } = require('./schemas.js');
 const Museum = require('./models/museum');
+const Review = require('./models/review');
 
 /**
  * Museum Middleware
@@ -51,4 +52,15 @@ module.exports.validateReview = (req,res,next) => {
     }else{
         next();
     }
+}
+
+// IsReviewAuthor Middleware
+module.exports.isReviewAuthor = async(req, res, next) => {
+    const { id, reviewId } = req.params;
+    const review = await Review.findById(reviewId);
+    if(!review.author.equals(req.user._id)){
+        req.flash('error','You do not have permission to do that');
+        return res.redirect(`/museums/${id}`);
+    }
+    next();
 }
