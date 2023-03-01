@@ -5,27 +5,12 @@ const ExpressError = require('../utils/ExpressError');
 const Museum = require('../models/museum');
 const Review = require('../models/review');
 const { validateReview, isLoggedIn, isReviewAuthor } = require('../middleware');
-
+const reviews = require('../controllers/reviews');
 
 // Review POST route: add review
-router.post('/',isLoggedIn, validateReview, catchAsync(async (req, res) => {
-    const museum = await Museum.findById(req.params.id);
-    const review = new Review(req.body.review);
-    review.author = req.user._id;
-    museum.reviews.push(review);
-    await review.save();
-    await museum.save();
-    req.flash('success','Successfully Add Review');
-    res.redirect(`/museums/${museum._id}`);
-}))
+router.post('/',isLoggedIn, validateReview, catchAsync(reviews.createReview))
 
 // Review DELETE route: delete a review
-router.delete('/:reviewId',isLoggedIn,isReviewAuthor, catchAsync(async (req, res) => {
-    const  {id, reviewId } = req.params;
-    await Museum.findByIdAndUpdate(id, { $pull: { reviews: reviewId }})
-    await Review.findByIdAndDelete(reviewId);
-    req.flash('success','Successfully Delete Review');
-    res.redirect(`/museums/${id}`);
-}))
+router.delete('/:reviewId',isLoggedIn,isReviewAuthor, catchAsync(reviews.deleteReview))
 
 module.exports = router;
