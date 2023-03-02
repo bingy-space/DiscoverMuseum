@@ -6,11 +6,17 @@ const Museum = require('../models/museum');
 const { museumSchema } = require('../schemas.js');
 const { isLoggedIn, isAuthor, validateMuseum } = require('../middleware');
 const museums = require('../controllers/museums');
+const multer = require('multer');
+const upload = multer({dest: 'uploads/'});
 
 // Restructure Route
 router.route('/')
     .get(catchAsync(museums.index))
-    .post(isLoggedIn, validateMuseum, catchAsync(museums.createMuseum))
+    // .post(isLoggedIn, validateMuseum, catchAsync(museums.createMuseum))
+    .post(upload.array('image'), (req, res) => {
+        console.log(req.body, req.files)
+        res.send("It Worked?");
+    })
 
 router.get('/new', isLoggedIn, catchAsync(museums.renderNewForm))
 
