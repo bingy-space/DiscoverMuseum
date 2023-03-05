@@ -7,7 +7,8 @@ const { museumSchema } = require('../schemas.js');
 const { isLoggedIn, isAuthor, validateMuseum } = require('../middleware');
 const museums = require('../controllers/museums');
 const multer = require('multer');
-const upload = multer({dest: 'uploads/'});
+const {storage} = require('../cloudinary');
+const upload = multer({storage});
 
 // Restructure Route
 router.route('/')
