@@ -9,8 +9,11 @@ cloudinary.config({
 
 const storage = new CloudinaryStorage({
     cloudinary,
-    folder:'DiscoverMuseum',
-    allowedFormates:['jpeg','png','jpg']
+    params:{
+        folder:'DiscoverMuseum',
+        allowedFormates:['jpeg','png','jpg']
+    }
+
 });
 
 module.exports = {
