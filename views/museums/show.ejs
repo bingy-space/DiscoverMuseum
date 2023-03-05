@@ -28,7 +28,9 @@
         </div>
         <div class="col-md-8">
             <div class="card" style="width: 100%; margin-bottom: 20px;">
-                <img src="<%= theMuseum.image %>" class="card-img-top" alt="Chicago Skyscrapers" />
+                <% for(let img of theMuseum.images) {%>
+                    <img src="<%= img.url %>" class="card-img-top" alt="Chicago Skyscrapers" />
+                <% } %>
                 <div class="card-body">
                     <h5 class="card-title">
                         <%= theMuseum.title %>

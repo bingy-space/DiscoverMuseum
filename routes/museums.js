@@ -13,11 +13,7 @@ const upload = multer({storage});
 // Restructure Route
 router.route('/')
     .get(catchAsync(museums.index))
-    // .post(isLoggedIn, validateMuseum, catchAsync(museums.createMuseum))
-    .post(upload.array('image'), (req, res) => {
-        console.log(req.body, req.files)
-        res.send("It Worked?");
-    })
+    .post(isLoggedIn, upload.array('image'), validateMuseum, catchAsync(museums.createMuseum))
 
 router.get('/new', isLoggedIn, catchAsync(museums.renderNewForm))
 
