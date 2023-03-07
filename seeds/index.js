@@ -33,7 +33,16 @@ const seedDB = async () => {
             author: '63f3b9dc546b94293bc65b67',
             location: `${cities[random1000].city}, ${cities[random1000].state}`,
             title: `${sample(name)}`,
-            image: 'https://images.unsplash.com/photo-1513038630932-13873b1a7f29?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=735&q=80',
+            images: [
+                {
+                  url: 'https://res.cloudinary.com/dgz0byy28/image/upload/v1678043040/DiscoverMuseum/wuit64gfzq4ti4iebop9.jpg',
+                  filename: 'DiscoverMuseum/wuit64gfzq4ti4iebop9',
+                },
+                {
+                  url: 'https://res.cloudinary.com/dgz0byy28/image/upload/v1678043040/DiscoverMuseum/bgrzg5fqatqyyiwjdhxz.jpg',
+                  filename: 'DiscoverMuseum/bgrzg5fqatqyyiwjdhxz',
+                }
+              ],
             description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.',
             price
         })

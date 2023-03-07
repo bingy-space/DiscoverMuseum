@@ -10,7 +10,7 @@
     <div class="d-flex align-content-start flex-wrap gap-3">
         <% for(let museum of museums){ %>
             <div class="card" style="width:19.5rem;">
-                <img src="https://mdbcdn.b-cdn.net/img/new/standard/nature/184.webp" class="card-img-top"
+                <img src="<%= museum.images[0].url %>" class="card-img-top"
                     alt="Fissure in Sandstone" />
                 <div class="card-body">
                     <h5 class="card-title">
