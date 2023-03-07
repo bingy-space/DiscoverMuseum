@@ -19,7 +19,7 @@ router.get('/new', isLoggedIn, catchAsync(museums.renderNewForm))
 
 router.route('/:id')
     .get(catchAsync(museums.showMuseum))
-    .put(isLoggedIn,isAuthor, validateMuseum, catchAsync(museums.updateMuseum))
+    .put(isLoggedIn,isAuthor, upload.array('image'), validateMuseum, catchAsync(museums.updateMuseum))
     .delete(isLoggedIn, isAuthor, catchAsync(museums.deleteMuseum))
 
 router.get('/:id/edit', isLoggedIn, isAuthor, catchAsync(museums.editMuseum))
