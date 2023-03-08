@@ -1,4 +1,5 @@
 const Museum = require('../models/museum');
+const { cloudinary } = require("../cloudinary");
 
 module.exports.index = async (req, res) => {
     const museums = await Museum.find({});
@@ -42,10 +43,17 @@ module.exports.editMuseum = async (req, res) => {
 
 module.exports.updateMuseum = async (req, res) => {
     const { id } = req.params;
+    console.log(req.body);
     const museum = await Museum.findByIdAndUpdate(id, { ...req.body.museum });
     const imgs = req.files.map(f => ({url: f.path, filename: f.filename}));
     museum.images.push(...imgs);
     await museum.save();
+    if(req.body.deleteImages){
+        for(let filename of req.body.deleteImages){
+            await cloudinary.uploader.destroy(filename);
+        }
+        await museum.updateOne({$pull: {images: {filename: {$in: req.body.deleteImages}}}})
+    }
     req.flash('success','Successfully Updates Museum');
     res.redirect(`/museums/${museum._id}`);
 }
