@@ -27,11 +27,15 @@
                             <!-- Image Url input -->
                             <div class="form-outline mb-4">
                                 <input type="file" name="image" id="image" class="form-control" multiple>
-
-                                <!-- <input type="text" id="image" name="museum[image]" class="form-control"
-                                    value="<%= museum.image %>" required/>
-                                <label class="form-label" for="location">Image URL</label>
-                                <div class="valid-feedback">Looks good!</div> -->
+                            </div>
+                            <div class="form-outline mb-4">
+                                <% museum.images.forEach(function(img, i) {%>
+                                    <img src="<%= img.url %>" class="img-thumbnail" alt="">
+                                    <div class="form-check-inline">
+                                        <input type="checkbox" id="image-<%=i%>" name="deleteImages[]" value="<%=img.filename%>">
+                                    </div>
+                                    <label for="image-<%=i%>">Delete</label>
+                                <% }) %>
                             </div>
 
                             <!-- Price input -->
