@@ -18,17 +18,14 @@ module.exports.createMuseum = async (req, res, next) => {
         query: req.body.museum.location,
         limit: 1
     }).send()
-    console.log(geoData.body.features[0].geometry.coordinates);
-    res.send("OK")
-
-    // if(!req.body.theMuseum) throw new ExpressError('Invalid Museum Data',400);
-    // const theMuseum = new Museum(req.body.museum);
-    // theMuseum.images =  req.files.map(f => ({url: f.path, filename: f.filename}))
-    // theMuseum.author = req.user._id;
-    // await theMuseum.save();
-    // console.log(theMuseum)
-    // req.flash('success','Successfully made a new museum');
-    // res.redirect(`/museums/${theMuseum._id}`)
+    const theMuseum = new Museum(req.body.museum);
+    museum.geometry = geoData.body.features[0].geometry.coordinates;
+    theMuseum.images = req.files.map(f => ({url: f.path, filename: f.filename}))
+    theMuseum.author = req.user._id;
+    await theMuseum.save();
+    console.log(theMuseum)
+    req.flash('success','Successfully made a new museum');
+    res.redirect(`/museums/${theMuseum._id}`)
 }
 
 module.exports.showMuseum = async (req, res) => {
