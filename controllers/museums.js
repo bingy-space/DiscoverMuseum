@@ -1,5 +1,8 @@
 const Museum = require('../models/museum');
 const { cloudinary } = require("../cloudinary");
+const mbxGeocoding = require("@mapbox/mapbox-sdk/services/geocoding");
+const mapBoxToken = process.env.MAPBOX_TOKEN;
+const geocoder = mbxGeocoding({accessToken: mapBoxToken})
 
 module.exports.index = async (req, res) => {
     const museums = await Museum.find({});
@@ -11,14 +14,21 @@ module.exports.renderNewForm = async (req, res) => {
 }
 
 module.exports.createMuseum = async (req, res, next) => {
+    const geoData = await geocoder.forwardGeocode({
+        query: req.body.museum.location,
+        limit: 1
+    }).send()
+    console.log(geoData.body.features[0].geometry.coordinates);
+    res.send("OK")
+
     // if(!req.body.theMuseum) throw new ExpressError('Invalid Museum Data',400);
-    const theMuseum = new Museum(req.body.museum);
-    theMuseum.images =  req.files.map(f => ({url: f.path, filename: f.filename}))
-    theMuseum.author = req.user._id;
-    await theMuseum.save();
-    console.log(theMuseum)
-    req.flash('success','Successfully made a new museum');
-    res.redirect(`/museums/${theMuseum._id}`)
+    // const theMuseum = new Museum(req.body.museum);
+    // theMuseum.images =  req.files.map(f => ({url: f.path, filename: f.filename}))
+    // theMuseum.author = req.user._id;
+    // await theMuseum.save();
+    // console.log(theMuseum)
+    // req.flash('success','Successfully made a new museum');
+    // res.redirect(`/museums/${theMuseum._id}`)
 }
 
 module.exports.showMuseum = async (req, res) => {
